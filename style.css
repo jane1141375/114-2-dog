@@ -1,0 +1,1029 @@
+:root {
+  --cream: #ffc476;
+  --beige: #f4e0c6;
+  --orange: #ff8a3d;
+  --orange-deep: #e97218;
+  --brown: #5a3a24;
+  --shadow: 0 20px 40px rgba(233, 114, 24, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255, 207, 163, 0.55), transparent 25%),
+    linear-gradient(180deg, #fffaf2 0%, #f9e8d4 100%);
+  color: var(--brown);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  position: relative;
+}
+
+.emoji-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.emoji-item {
+  position: absolute;
+  font-size: 5rem;
+  opacity: 0.6;
+  user-select: none;
+  pointer-events: none;
+}
+
+.page {
+  width: min(860px, 100%);
+  background: rgba(255, 248, 239, 0.95);
+  border: 3px solid rgba(233, 114, 24, 0.16);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 40px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.page::before,
+.page::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.page::before {
+  width: 130px;
+  height: 130px;
+  background: rgba(255, 138, 61, 0.15);
+  top: -20px;
+  left: -28px;
+}
+
+.page::after {
+  width: 160px;
+  height: 160px;
+  background: rgba(255, 138, 61, 0.12);
+  bottom: -40px;
+  right: -24px;
+}
+
+.paw-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 3rem;
+  filter: drop-shadow(0 6px 8px rgba(233, 114, 24, 0.15));
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  line-height: 1.3;
+}
+
+.subtitle {
+  margin: 12px auto 28px;
+  max-width: 560px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #6e4f35;
+}
+
+.camera-button {
+  border: none;
+  border-radius: 999px;
+  padding: 18px 42px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fffdf8;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+  box-shadow: 0 16px 28px rgba(233, 114, 24, 0.24);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  margin-bottom: 28px;
+}
+
+.camera-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(233, 114, 24, 0.3);
+  filter: brightness(1.02);
+}
+
+.camera-button:active {
+  transform: translateY(1px);
+}
+
+.frame-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.preview-box {
+  width: min(540px, 100%);
+  min-height: 320px;
+  border: 3px solid #111;
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0)),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 12px),
+    #161616;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 540px;
+}
+
+.preview-box::before {
+  content: "鏡頭畫面預留區";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 248, 239, 0.7);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.preview-box::after {
+  content: "🦴";
+  position: absolute;
+  font-size: 3rem;
+  right: 18px;
+  bottom: 14px;
+  opacity: 0.65;
+}
+
+.preview-box video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  background: #000;
+}
+
+.preview-box.is-active video {
+  display: block;
+}
+
+.preview-box.is-active::before,
+.preview-box.is-active::after {
+  display: none;
+}
+
+.trigger-badge {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  max-width: calc(100% - 36px);
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 244, 229, 0.97);
+  border: 2px solid rgba(233, 114, 24, 0.22);
+  box-shadow: 0 14px 22px rgba(233, 114, 24, 0.2);
+  color: #5a3a24;
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.6;
+  text-align: left;
+  display: none;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.trigger-badge.is-visible {
+  display: block;
+}
+
+.result-panel {
+  flex: 0 1 220px;
+  min-width: 220px;
+  border-radius: 20px;
+  background: rgba(255, 248, 239, 0.9);
+  border: 2px solid rgba(233, 114, 24, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+  padding: 18px 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  color: #5a3a24;
+}
+
+.result-panel p {
+  margin: 0;
+}
+
+.result-title {
+  font-size: 0.95rem;
+  color: #6e4f35;
+  letter-spacing: 0.03em;
+}
+
+.result-label,
+.result-confidence {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.result-status {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #6e4f35;
+}
+
+.game-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 24, 12, 0.58);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.game-overlay.is-open {
+  display: flex;
+}
+
+.adoption-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(120%);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(255, 138, 61, 0.24);
+  box-shadow: 0 14px 24px rgba(233, 114, 24, 0.14);
+  border-radius: 16px;
+  padding: 8px 12px;
+  width: min(280px, calc(100% - 24px));
+  opacity: 0;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  z-index: 120;
+}
+
+.adoption-toast.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.adoption-toast .toast-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.adoption-toast p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #5a3a24;
+  line-height: 1.2;
+  text-align: center;
+  padding: 6px 0;
+}
+
+.heart-burst {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.heart-burst .heart {
+  position: absolute;
+  font-size: 1.6rem;
+  color: #ff4d6d;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes heartFloat {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -70px) scale(1.1);
+  }
+}
+.game-card {
+  width: min(460px, 100%);
+  border-radius: 28px;
+  background: linear-gradient(180deg, #fff8ef 0%, #ffe0bf 100%);
+  border: 3px solid rgba(233, 114, 24, 0.22);
+  box-shadow: 0 28px 50px rgba(233, 114, 24, 0.24);
+  padding: 22px 22px 18px;
+  position: relative;
+  text-align: center;
+  color: #5a3a24;
+}
+
+.game-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 138, 61, 0.18);
+  color: #5a3a24;
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.piano-instructions {
+  margin: 0 0 14px;
+  color: #6e4f35;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.score-sheet-panel {
+  display: grid;
+  grid-template-columns: 1fr minmax(180px, 240px);
+  gap: 12px;
+  margin-bottom: 14px;
+  align-items: start;
+}
+
+.score-sheet-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.score-sheet-btn {
+  border: none;
+  border-radius: 16px;
+  padding: 10px 14px;
+  background: #fff4e6;
+  color: #5a3a24;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.score-sheet-btn:hover {
+  transform: translateY(-1px);
+  background: #ffe9c9;
+}
+
+.score-sheet-btn.active {
+  box-shadow: inset 0 0 0 2px rgba(255, 138, 61, 0.22);
+  background: linear-gradient(180deg, #fff5e8 0%, #ffebc9 100%);
+}
+
+.score-sheet {
+  border-radius: 20px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(233, 114, 24, 0.16);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  min-height: 112px;
+  text-align: left;
+}
+
+.score-sheet-title {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #6e4f35;
+}
+
+.score-sheet-content {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "Microsoft JhengHei", Arial, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: #5a3a24;
+}
+
+/* 好感度變化浮動動畫（顯示於捕捉照片上方） */
+.affection-delta {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 700;
+  font-size: 1.25rem; /* 比原本大約加大 2 級 */
+  color: #ff3b30; /* 預設紅色 */
+  pointer-events: none;
+  opacity: 0;
+  z-index: 4;
+}
+
+.affection-delta.animate {
+  animation: affectionFloat 1s ease-out forwards;
+}
+
+@keyframes affectionFloat {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -40px) scale(1.05);
+  }
+}
+
+/* 正負值色彩 */
+.affection-delta.positive {
+  color: #2ecc71; /* 綠色 */
+  font-weight: 900;
+}
+.affection-delta.negative {
+  color: #ff3b30; /* 紅色 */
+  font-weight: 900;
+}
+
+.piano-keys {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(40px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.piano-key {
+  border: none;
+  border-radius: 14px;
+  background: #fff4e6;
+  color: #5a3a24;
+  font-weight: 700;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.piano-key:hover {
+  transform: translateY(-2px);
+  background: #ffe9c9;
+}
+
+/* 當琴鍵被滑鼠點擊或鍵盤觸發時的視覺亮起效果 */
+.piano-key.active,
+.piano-key:active {
+  background-color: #ffeaa7 !important; /* 變成亮黃色 */
+  transform: translateY(2px);            /* 稍微往下沉，模擬按壓感 */
+  box-shadow: inset 0px 2px 5px rgba(0,0,0,0.2);
+}
+
+.piano-feedback {
+  min-height: 1.4em;
+  margin: 0 0 14px;
+  color: #6e4f35;
+}
+
+.piano-done {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: #ff8a3d;
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.game-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.captured-dog-wrap {
+  width: 220px;
+  height: 220px;
+  margin: 10px auto 14px;
+  border-radius: 50%;
+  background: rgba(255, 246, 235, 0.9);
+  border: 4px solid rgba(233, 114, 24, 0.18);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: 0 18px 30px rgba(233, 114, 24, 0.14);
+  position: relative;
+}
+
+.captured-dog {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  animation: floatDog 1.4s ease-in-out infinite alternate;
+}
+
+.captured-dog.has-image {
+  display: block;
+}
+
+.dog-emoji {
+  font-size: 4rem;
+  display: inline-block;
+  animation: sway 1.2s ease-in-out infinite alternate;
+}
+
+.captured-dog.has-image + .dog-emoji {
+  display: none;
+}
+
+@keyframes sway {
+  from {
+    transform: rotate(-8deg) translateX(-2px);
+  }
+  to {
+    transform: rotate(8deg) translateX(2px);
+  }
+}
+
+@keyframes floatDog {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.03) translateY(-4px);
+  }
+}
+
+.progress-wrap {
+  text-align: left;
+  margin-top: 6px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0 0;
+}
+
+.stat-item {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(233, 114, 24, 0.16); 
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.stat-item span {
+  display: block;
+  font-size: 0.92rem;
+  color: #8d5a35;
+}
+
+.stat-item strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.2rem;
+  color: #5a3a24;
+}
+
+.progress-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 214, 179, 0.8);
+  overflow: hidden;
+  border: 1px solid rgba(233, 114, 24, 0.15);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 20%;
+  border-radius: inherit;
+  background: #ff6b6b;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.game-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.game-btn {
+  border: none;
+  border-radius: 18px;
+  padding: 12px 10px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  background: linear-gradient(180deg, #fff3df 0%, #ffd29f 100%);
+  color: #5a3a24;
+  box-shadow: 0 12px 18px rgba(233, 114, 24, 0.16);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.game-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 22px rgba(233, 114, 24, 0.2);
+}
+
+.game-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.game-status {
+  margin: 12px 0 0;
+  font-size: 0.95rem;
+  color: #6e4f35;
+}
+
+.page-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.header-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+}
+
+.adoption-house-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid rgba(233, 114, 24, 0.3);
+  background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
+  font-size: 1.6rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.18s ease;
+  box-shadow: 0 8px 16px rgba(233, 114, 24, 0.12);
+  flex-shrink: 0;
+}
+
+.stats-button { 
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid rgba(233, 114, 24, 0.3);
+  background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
+  font-size: 1.4rem; 
+  color: #fffdf8; 
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.stats-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(233, 114, 24, 0.12);
+}
+
+.stats-card canvas {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  display: block;
+  margin: 6px auto 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: inset 0 6px 18px rgba(0,0,0,0.03);
+}
+
+/* 統計視窗的重置按鈕（左上） */
+.stats-reset-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  min-width: 56px;
+  height: 34px;
+  border-radius: 10px;
+  border: none;
+  background: #ffffff;
+  color: #5a3a24;
+  font-weight: 800;
+  box-shadow: 0 8px 16px rgba(233, 114, 24, 0.08);
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.stats-reset-btn:hover {
+  transform: translateY(-2px);
+  background: #fff8ef;
+}
+
+.stats-counts {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-weight: 800;
+  color: #6e4f35;
+}
+
+.stats-counts .stat-item {
+  flex: 1 1 0;
+  background: rgba(255,255,255,0.96);
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid rgba(233,114,24,0.08);
+  font-size: 0.9rem;
+}
+
+.adoption-house-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(233, 114, 24, 0.18);
+  border-color: rgba(233, 114, 24, 0.5);
+}
+
+.adoption-house-button:active {
+  transform: translateY(0);
+}
+
+.adoption-house-card {
+  width: min(900px, 100%);
+  /* 再次縮小高度以減少空白 */
+  height: min(420px, calc(100vh - 60px)); 
+  max-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 18px 18px 14px;
+}
+
+.adopted-dogs-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  align-content: start;
+}
+
+.adoption-pagination {
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 0 4px;
+}
+
+.adoption-pagination .page-btn {
+  min-width: 40px;
+  height: 40px;
+  border: 2px solid rgba(233, 114, 24, 0.18);
+  background: #fff8ef;
+  color: #5a3a24;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.adoption-pagination .page-btn:hover {
+  transform: translateY(-1px);
+  background: #ffedd2;
+}
+
+.adoption-pagination .page-btn.active {
+  background: linear-gradient(180deg, #ffca8b 0%, #ff9f43 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.adopted-dogs-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.adopted-dogs-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.adopted-dogs-container::-webkit-scrollbar-thumb {
+  background: rgba(233, 114, 24, 0.3);
+  border-radius: 3px;
+}
+
+.adopted-dogs-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(233, 114, 24, 0.5);
+}
+
+.adopted-dog-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid rgba(233, 114, 24, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding-bottom: 0;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.adopted-dog-meta {
+  padding: 10px 12px 6px;
+  display: grid;
+  gap: 4px;
+  background: #fafafa;
+}
+
+.adopted-dog-name {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #3d220a;
+}
+
+.adopted-dog-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px 12px;
+  gap: 8px;
+  background: #fff8f0;
+}
+
+.name-dog-btn,
+.delete-dog-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.name-dog-btn {
+  background: #ff9f43;
+  color: #fff;
+  flex: 1;
+}
+
+.name-dog-btn:hover {
+  background: #ffb95f;
+}
+
+.delete-dog-btn {
+  position: static;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  background: #ff6b6b;
+  opacity: 1;
+}
+
+.delete-dog-btn:hover {
+  background: #ff4d4d;
+}
+
+.adopted-dog-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(233, 114, 24, 0.15);
+}
+
+.adopted-dog-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.adopted-dog-timestamp {
+  padding: 8px 8px 6px;
+  font-size: 0.65rem;
+  color: #888;
+  margin: 0;
+  background: #fafafa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delete-dog-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.18s ease;
+  opacity: 0;
+}
+
+.adopted-dog-card:hover .delete-dog-btn {
+  opacity: 1;
+}
+
+.delete-dog-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.empty-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #999;
+  padding: 40px 16px;
+  font-size: 1rem;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 34px 20px;
+  }
+
+  .page-header {
+    gap: 12px;
+  }
+
+  .adoption-house-button {
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+
+  .camera-button {
+    width: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .preview-box {
+    min-height: 260px;
+  }
+
+  .result-panel {
+    width: 100%;
+  }
+
+  .score-sheet-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .game-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .adopted-dogs-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}

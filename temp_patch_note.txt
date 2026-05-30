@@ -1,0 +1,1 @@
+Patch: add reset button in stats panel, implement reset in StatsPanel, add CSS for .stats-reset-btn
