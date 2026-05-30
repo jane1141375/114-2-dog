@@ -74,7 +74,7 @@ async function initPage() {
   if (loaded) {
     statusText.textContent = "模型已就緒，開啟鏡頭後會自動偵測";
   } else {
-    statusText.textContent = "模型載入失敗，請檢查 doggo-model 資料夾路徑";
+    statusText.textContent = `模型載入失敗：${AIController.loadError || '請檢查 Dog 資料夾路徑'}`;
   }
 }
 
@@ -101,7 +101,7 @@ async function startCamera() {
       const loaded = await AIController.loadModel();
 
       if (!loaded) {
-        statusText.textContent = "模型載入失敗，請檢查 tm-my-image-model 資料夾路徑";
+        statusText.textContent = `模型載入失敗：${AIController.loadError || '請檢查 Dog 資料夾路徑'}`;
         return;
       }
     }
@@ -135,7 +135,7 @@ function handlePredictionResult(result, error) {
     return;
   }
 
-  setResult(result.label, result.confidence, "偵測中");
+  setResult(result.label, result.originalLabel, result.confidence, "偵測中");
 
   if (result.label === "dog" && result.confidence > 0.8) {
     handleDogDetected(result.confidence);
@@ -158,8 +158,8 @@ function handleDogDetected(confidence) {
   triggerBadge.classList.add("is-visible");
 }
 
-function setResult(label, confidence, message) {
-  resultLabel.textContent = label;
+function setResult(label, originalLabel, confidence, message) {
+  resultLabel.textContent = originalLabel ? `${originalLabel} (${label})` : label;
   resultConfidence.textContent = `${(confidence * 100).toFixed(2)}%`;
 
   if (!dogDetected) {
@@ -259,6 +259,9 @@ try {
 statsBtn?.addEventListener('click', () => {
   try { StatsPanel.open(); } catch (e) { console.error(e); }
 });
+
+initPage();
+initializeBackgroundEmojis();
 
 // 初始化背景裝飾符號
 function initializeBackgroundEmojis() {
