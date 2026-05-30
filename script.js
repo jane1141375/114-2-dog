@@ -143,23 +143,25 @@ function handlePredictionResult(result, error) {
 }
 
 function handleDogDetected(confidence) {
-  if (!dogDetected) {
+  const shouldUpdateImage = !dogDetected || confidence > 0.8;
+
+  if (shouldUpdateImage) {
     dogDetected = true;
     capturedDogImage = captureCurrentVideoFrame();
 
     if (capturedDogImage) {
       GameController.setCapturedDogImage(capturedDogImage);
     }
-
-    statusText.textContent = `已捕捉狗狗畫面，可開始互動（信心值 ${(confidence * 100).toFixed(2)}%）`;
   }
+
+  statusText.textContent = `已捕捉狗狗畫面，可開始互動（信心值 ${(confidence * 100).toFixed(2)}%）`;
 
   // 重點修正 1：只要曾經偵測到狗，互動按鈕就會一直停留。
   triggerBadge.classList.add("is-visible");
 }
 
 function setResult(label, originalLabel, confidence, message) {
-  resultLabel.textContent = originalLabel ? `${originalLabel} (${label})` : label;
+  resultLabel.textContent = label;
   resultConfidence.textContent = `${(confidence * 100).toFixed(2)}%`;
 
   if (!dogDetected) {
