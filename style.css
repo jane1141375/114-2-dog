@@ -214,6 +214,40 @@ body {
   display: block;
 }
 
+.camera-flip-btn {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 138, 61, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: #5a3a24;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  transition: all 0.18s ease;
+  box-shadow: 0 8px 16px rgba(233, 114, 24, 0.12);
+}
+
+.preview-box.is-active .camera-flip-btn {
+  display: flex;
+}
+
+.camera-flip-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 138, 61, 0.6);
+  box-shadow: 0 10px 20px rgba(233, 114, 24, 0.16);
+}
+
+.camera-flip-btn:active {
+  transform: scale(0.95);
+}
+
 .result-panel {
   flex: 0 1 220px;
   min-width: 220px;

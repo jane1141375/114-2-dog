@@ -1,6 +1,7 @@
 const cameraToggle = document.getElementById("cameraToggle");
 const previewBox = document.getElementById("previewBox");
 const cameraFeed = document.getElementById("cameraFeed");
+const cameraFlipBtn = document.getElementById("cameraFlipBtn");
 const resultLabel = document.getElementById("resultLabel");
 const resultConfidence = document.getElementById("resultConfidence");
 const statusText = document.getElementById("statusText");
@@ -36,6 +37,7 @@ const statsCounts = document.getElementById("statsCounts");
 let currentStream = null;
 let dogDetected = false;
 let capturedDogImage = null;
+let cameraFacingMode = "user"; // "user" = 前鏡頭，"environment" = 後鏡頭
 
 DogAdoptionHouse.init({
   adoptionHouseOverlay,
@@ -86,7 +88,9 @@ async function startCamera() {
 
   try {
     currentStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+      video: {
+        facingMode: cameraFacingMode,
+      },
       audio: false,
     });
 
@@ -231,6 +235,18 @@ cameraToggle.addEventListener("click", () => {
   }
 });
 
+cameraFlipBtn.addEventListener("click", () => {
+  if (currentStream) {
+    // 切換鏡頭模式
+    cameraFacingMode = cameraFacingMode === "user" ? "environment" : "user";
+    // 停止當前相機並重新啟動
+    stopCamera();
+    setTimeout(() => {
+      startCamera();
+    }, 200);
+  }
+});
+
 triggerBadge.addEventListener("click", () => {
   if (triggerBadge.classList.contains("is-visible")) {
     GameController.openGame();
@@ -270,6 +286,8 @@ function initializeBackgroundEmojis() {
   const emojis = ["❤️", "🐶", "🦴", "🐾"];
   const container = document.querySelector(".emoji-background");
   if (!container) return;
+  // 清空容器（避免重複初始化導致重疊）
+  container.innerHTML = "";
 
   const gridCols = 5;
   const gridRows = 5;
@@ -278,31 +296,59 @@ function initializeBackgroundEmojis() {
   const emojiGrid = [];
 
   function pickEmojiForPosition(row, col, rowItems) {
-    const forbidden = new Set();
+    // 使用加權隨機：若鄰近（上下左右）已有相同圖案，該圖案權重為 0.1；否則為 1
+    const isStaggeredRow = row % 2 === 1; // 偶數列視覺右移（row index 1,3）
+    const displayedCol = (col + (isStaggeredRow ? 0.5 : 0)) % gridCols;
+
+    // 收集所有鄰近位置的圖案（視覺位置）
+    const neighborEmojis = new Set();
+
+    // 同列左側
     if (col > 0) {
-      forbidden.add(rowItems[col - 1].textContent);
+      const leftEl = rowItems[col - 1];
+      if (leftEl) {
+        neighborEmojis.add(leftEl.textContent);
+      }
     }
+
+    // 上一列的上下左右鄰近（視覺位置）
     if (row > 0) {
       const prevRow = emojiGrid[row - 1];
-      forbidden.add(prevRow[col].textContent);
-      if (col > 0) {
-        forbidden.add(prevRow[col - 1].textContent);
-      }
-      if (col < gridCols - 1) {
-        forbidden.add(prevRow[col + 1].textContent);
+      const isPrevStaggered = (row - 1) % 2 === 1;
+
+      for (let j = 0; j < prevRow.length; j++) {
+        const prevEl = prevRow[j];
+        const prevDisplayed = (j + (isPrevStaggered ? 1 : 0)) % gridCols;
+        const delta = (prevDisplayed - displayedCol + gridCols) % gridCols;
+        // 若為視覺相鄰（含回繞），加入鄰近集合
+        if (delta === 0 || delta === 1 || delta === gridCols - 1) {
+          neighborEmojis.add(prevEl.textContent);
+        }
       }
     }
 
-    const candidates = emojis.filter((emoji) => !forbidden.has(emoji));
-    if (candidates.length > 0) {
-      return candidates[Math.floor(Math.random() * candidates.length)];
+    // 初始化每個 emoji 的權重：鄰近出現的為 0.1，否則為 1
+    const weights = {};
+    emojis.forEach((e) => {
+      weights[e] = neighborEmojis.has(e) ? 0.1 : 1;
+    });
+
+    // 加權隨機選取
+    const entries = Object.entries(weights);
+    const sum = entries.reduce((s, [, w]) => s + w, 0);
+    if (sum === 0) {
+      return emojis[Math.floor(Math.random() * emojis.length)];
     }
-    return emojis[Math.floor(Math.random() * emojis.length)];
+    let r = Math.random() * sum;
+    for (const [emoji, w] of entries) {
+      r -= w;
+      if (r <= 0) return emoji;
+    }
+    return entries[entries.length - 1][0];
   }
 
+  // 建立格線：把每個圖案放在格子中心，避免左右上下重疊
   for (let row = 0; row < gridRows; row++) {
-    const isStaggeredRow = row % 2 === 1;
-    const offset = isStaggeredRow ? cellWidth : cellWidth / 2;
     const rowItems = [];
 
     for (let col = 0; col < gridCols; col++) {
@@ -311,10 +357,15 @@ function initializeBackgroundEmojis() {
       el.className = "emoji-item";
       el.textContent = emoji;
       el.dataset.row = String(row);
-      el.dataset.col = String(col);
+      el.dataset.col = String(col); // logical column index
+      // 計算顯示欄位並儲存（避免重複宣告）
+      const isStaggeredRowDisplay = row % 2 === 1;
+      const displayedCol = (col + (isStaggeredRowDisplay ? 0.5 : 0)) % gridCols;
+      el.dataset.displayed = String(displayedCol);
 
-      const x = col * cellWidth + offset;
-      const y = row * cellHeight + cellHeight / 2;
+      // 顯示位置（格子中心）
+      const x = (displayedCol + 0.5) * cellWidth;
+      const y = (row + 0.5) * cellHeight;
 
       el.style.left = x + "%";
       el.style.top = y + "%";
@@ -328,16 +379,21 @@ function initializeBackgroundEmojis() {
   }
 
   function shiftBackgroundRows() {
+    // 以映射方式計算下一個欄位，確保同一列內元素一一對應不會發生重複
     emojiGrid.forEach((rowItems, row) => {
-      const direction = row % 2 === 0 ? -1 : 1; // 第 1 行往左，第 2 行往右
+      const direction = row % 2 === 0 ? -1 : 1;
       const isStaggeredRow = row % 2 === 1;
-      const offset = isStaggeredRow ? cellWidth : cellWidth / 2;
-
-      rowItems.forEach((el) => {
+      const nextCols = rowItems.map((el) => {
         const currentCol = Number(el.dataset.col);
-        const nextCol = (currentCol + direction + gridCols) % gridCols;
+        return (currentCol + direction + gridCols) % gridCols;
+      });
+
+      rowItems.forEach((el, idx) => {
+        const nextCol = nextCols[idx];
         el.dataset.col = String(nextCol);
-        const x = nextCol * cellWidth + offset;
+        const displayedNext = (nextCol + (isStaggeredRow ? 0.5 : 0)) % gridCols;
+        el.dataset.displayed = String(displayedNext);
+        const x = (displayedNext + 0.5) * cellWidth;
         el.style.left = x + "%";
       });
     });
@@ -346,5 +402,3 @@ function initializeBackgroundEmojis() {
   setInterval(shiftBackgroundRows, 3000);
 }
 
-initializeBackgroundEmojis();
-initPage();
