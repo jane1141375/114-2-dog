@@ -22,6 +22,7 @@ const energyValue = document.getElementById("energyValue");
 const gameStatus = document.getElementById("gameStatus");
 const dogEmoji = document.getElementById("dogEmoji");
 const capturedDog = document.getElementById("capturedDog");
+const realDogPhoto = document.getElementById("realDogPhoto");
 const adoptionHouseBtn = document.getElementById("adoptionHouseBtn");
 const adoptionHouseOverlay = document.getElementById("adoptionHouseOverlay");
 const adoptionClose = document.getElementById("adoptionClose");
@@ -64,6 +65,7 @@ GameController.init({
   gameStatus,
   dogEmoji,
   capturedDog,
+  realDogPhoto,
   adoptionToast,
   adoptionToastMessage,
 });

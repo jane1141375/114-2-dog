@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐾 好想把狗勾帶回家！</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=12" />
 </head>
 
 <body>
@@ -18,7 +18,7 @@
       <h1 class="title">🐾 好想把狗勾帶回家！</h1>
       <div class="header-buttons">
         <button id="adoptionHouseBtn" class="adoption-house-button" type="button" aria-label="查看家裡的小狗">🏠</button>
-        <button id="statsBtn" class="stats-button" type="button" aria-label="查看結局統計">📊</button>
+        <button id="statsBtn" class="stats-button" type="button" aria-label="查看遊玩紀錄">📊</button>
       </div>
     </div>
 
@@ -50,9 +50,11 @@
 
       <p id="gameTitle" class="game-title">🐾 狗狗互動小遊戲</p>
 
-      <div class="captured-dog-wrap">
-        <img id="capturedDog" class="captured-dog" alt="偵測到的狗狗畫面" />
-        <div id="dogEmoji" class="dog-emoji" aria-hidden="true">🐶</div>
+      <div class="dog-visual-stack">
+        <div class="real-dog-wrap">
+          <img id="realDogPhoto" class="real-dog-photo" alt="實體偵測截圖" />
+          <div id="dogEmoji" class="dog-emoji mood-badge" aria-hidden="true">🐶</div>
+        </div>
         <div id="affectionDelta" class="affection-delta" aria-hidden="true"></div>
       </div>
 
@@ -146,16 +148,16 @@
     <section class="stats-card game-card" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
       <button id="statsClose" class="game-close" type="button" aria-label="關閉統計視窗">✕</button>
       <button id="statsReset" class="stats-reset-btn" type="button" aria-label="重置統計">重置</button>
-      <p id="statsTitle" class="game-title">📊 結局次數統計</p>
-      <canvas id="statsCanvas" width="420" height="240" aria-hidden="false"></canvas>
-      <div id="statsCounts" class="stats-counts"></div>
+      <p id="statsTitle" class="game-title">📋 遊玩紀錄</p>
+      <canvas id="statsCanvas" width="420" height="1" aria-hidden="true" style="display:none"></canvas>
+      <div id="statsCounts" class="stats-counts record-list"></div>
     </section>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-  <script src="ai.js?v=2"></script>
-  <script src="game.js?v=2"></script>
-  <script src="script.js?v=2"></script>
+  <script src="ai.js?v=4"></script>
+  <script src="game.js?v=4"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
